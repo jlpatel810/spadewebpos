@@ -1,0 +1,68 @@
+
+Below points has been done.
+
+
+2 ) need to hide Point of sale version on login screen. 
+3) Payment typle we need to add 1 more dropdown which called "EBT/FOOD STAMPS" 
+
+4) Amount due on right screen needs to to be bigger in size ( if we can add a popup it would be great. 
+
+5) screen shot 2 need to change this screen and this need to stay on sale screen ( redirect the cursor to back to bar code section once the sale is done. 
+
+8) For suspend only give 5 checks to suspend thats it. 
+11) Instead of TAKING please change the text to RECEIPTS.
+  
+12) Need to add a Calculator on the screen 
+
+15) in Register Mode remove or hide "SALE BY INVOICE" option. 
+16) In the left side cornor where POS is displayed can you put SPADEPOS over there. 
+
+
+
+Need to discuss below points
+
+1 ) session time out error ( we need to display appopriate error message for session time out )
+
+6 )  Profit Margin section needs to display for admin when admin user in action. 
+
+7)  Dont give permission to admin to login at multiple location. 
+
+9) when this error message displays is it possible for to display how many numbers of products 
+is left 
+
+10) like open item we need to have a key for TAX and NON - TAX . 
+
+13 ) Remove the return function for Emplyee user keep it for ADMIN. 
+
+14) Please chage the entering inventory system to single piece. 
+
+
+
+
+
+
+
+
+
+
+
+File logs:
+
+view -> login.php
+
+model -> sales.php
+	
+/public_html/www/spadewebpos.com/public/dist/style.php	
+
+/public_html/www/spadewebpos.com/application/language/en/sales_lang.php
+
+/public_html/www/spadewebpos.com/application/views/partial/header.php
+/public_html/www/spadewebpos.com/application/views/partial/footer.php
+
+/public_html/www/spadewebpos.com/application/controllers/sales.php 
+/public_html/www/spadewebpos.com/application/libraries/Sale_lib.php
+
+/public_html/www/spadewebpos.com/application/views/sales/register.php
+
+
+	
