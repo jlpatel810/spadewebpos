@@ -138,6 +138,7 @@ if(isset($success))
 			}
 			else
 			{ 				
+				$kk=1;
 				foreach(array_reverse($cart, TRUE) as $line=>$item)
 				{					
 			?>
@@ -177,8 +178,16 @@ if(isset($success))
 									echo form_hidden('quantity', $item['quantity']);
 								}
 								else
-								{								
+								{		
+									echo "<div id='qty_$kk'>";
+									
+									echo "<input type='button' value='+' class='qtyplus' field='quantity' />"; 
+									
 									echo form_input(array('name'=>'quantity', 'class'=>'form-control input-sm', 'value'=>to_quantity_decimals($item['quantity']), 'tabindex'=>++$tabindex));
+									
+									echo " <input type='button' value='-' class='qtyminus' field='quantity' />";
+									echo "</div>"; $kk++;
+								
 								}
 								?>
 							</td>
@@ -840,6 +849,56 @@ function check_payment_type()
 	}
 }
 
+jQuery(document).ready(function(){
+    // This button will increment the value
+    $('.qtyplus').click(function(e){
+        // Stop acting like a button
+        e.preventDefault();
+        // Get the field name
+		
+        fieldName = $(this).attr('field');
+        fieldid = $(this).parent().attr('id');
+        // Get its current value
+        var currentVal = parseInt($('#'+fieldid+' input[name='+fieldName+']').val());
+        // If is not undefined
+        if (!isNaN(currentVal)) {
+            // Increment
+            $('#'+fieldid+' input[name='+fieldName+']').val(currentVal + 1);
+        } else {
+            // Otherwise put a 0 there
+            $('#'+fieldid+' input[name='+fieldName+']').val(0);
+        }
+    });
+    // This button will decrement the value till 0
+    $(".qtyminus").click(function(e) {
+        // Stop acting like a button
+        e.preventDefault();
+        // Get the field name
+        fieldName = $(this).attr('field');
+		fieldid = $(this).parent().attr('id');
+		
+        // Get its current value
+        var currentVal = parseInt($('#'+fieldid+' input[name='+fieldName+']').val());
+        // If it isn't undefined or its greater than 0
+        if (!isNaN(currentVal) && currentVal > 0) {
+            // Decrement one
+            $('#'+fieldid+' input[name='+fieldName+']').val(currentVal - 1);
+        } else {
+            // Otherwise put a 0 there
+            $('#'+fieldid+' input[name='+fieldName+']').val(0); 
+        }
+    });
+});
+
+
 </script>
+
+<style>
+.qtyplus{width:30px;margin-bottom:2px; }
+.qtyminus{width:30px;margin-top:2px; }
+
+
+</style>
+
 
 <?php $this->load->view("partial/footer"); ?>
