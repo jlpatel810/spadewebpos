@@ -172,7 +172,7 @@ function get_people_manage_table_headers()
 	}
 
 	return transform_headers($headers);
-}
+}function get_rules_manage_table_headers(){	$CI =& get_instance();	$headers = array(		array('rules.rule_id' => $CI->lang->line('common_id')),		array('rule_name' => 'Rule name'),				array('status' => 'status'),			);	if($CI->Employee->has_grant('messages', $CI->session->userdata('person_id')))	{		$headers[] = array('messages' => '', 'sortable' => FALSE);	}		return transform_headers($headers);}
 
 function get_person_data_row($person, $controller)
 {

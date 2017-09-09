@@ -59,7 +59,14 @@ if(isset($success))
 						<?php echo anchor($controller_name."/addopenitem", '<span class="glyphicon glyphicon-list-alt">&nbsp</span>' . $this->lang->line('sales_openitem'), 
 									array('class'=>'btn btn-primary btn-sm', 'id'=>'sales_openitem_button', 'title'=>$this->lang->line('sales_openitem'))); ?>
 					</li>
-				
+				<li class="pull-left">
+				<button class='btn btn-default btn-sm modal-dlg' id='show_suspended_sales_button' data-href='<?php echo site_url($controller_name."/suspended"); ?>'
+							title='<?php echo $this->lang->line('sales_tax'); ?>'>
+						<span class="glyphicon glyphicon-align-justify">&nbsp</span><?php echo $this->lang->line('sales_tax'); ?>
+					</button>						
+						
+					</li>	
+			
 
 				<li class="pull-right">
 					<button class='btn btn-default btn-sm modal-dlg' id='show_suspended_sales_button' data-href='<?php echo site_url($controller_name."/suspended"); ?>'
@@ -137,8 +144,7 @@ if(isset($success))
 			<?php
 			}
 			else
-			{ 				
-				$kk=1;
+			{  $kk=1;				
 				foreach(array_reverse($cart, TRUE) as $line=>$item)
 				{					
 			?>
@@ -178,23 +184,27 @@ if(isset($success))
 									echo form_hidden('quantity', $item['quantity']);
 								}
 								else
-								{		
-									echo "<div id='qty_$kk'>";
+								{			
+									echo "<div id='qty_$kk' class='$line'>"; 
 									
-									echo "<input type='button' value='+' class='qtyplus' field='quantity' />"; 
-									
-									echo form_input(array('name'=>'quantity', 'class'=>'form-control input-sm', 'value'=>to_quantity_decimals($item['quantity']), 'tabindex'=>++$tabindex));
+									echo "<input type='button' value='+' class='qtyplus' field='quantity' />";  
+
+							
+									echo form_input(array('name'=>'quantity', 'class'=>'form-control input-sm', 'value'=>to_quantity_decimals($item['quantity']), 'tabindex'=>++$tabindex));									
 									
 									echo " <input type='button' value='-' class='qtyminus' field='quantity' />";
-									echo "</div>"; $kk++;
-								
+									echo "</div>"; 
 								}
 								?>
 							</td>
 
 							<td><?php echo form_input(array('name'=>'discount', 'class'=>'form-control input-sm', 'value'=>to_decimals($item['discount'], 0), 'tabindex'=>++$tabindex));?></td>
 							<td><?php echo to_currency($item['price']*$item['quantity']-$item['price']*$item['quantity']*$item['discount']/100); ?></td>
-							<td><a href="javascript:document.getElementById('<?php echo 'cart_'.$line ?>').submit();" title=<?php echo $this->lang->line('sales_update')?> ><span class="glyphicon glyphicon-refresh"></span></a></td>
+							<td>
+							<div id='ref_<?php echo $kk; ?>'> 
+							<a  href="javascript:document.getElementById('<?php echo 'cart_'.$line ?>').submit();" title=<?php echo $this->lang->line('sales_update')?> ><span class="glyphicon glyphicon-refresh"></span></a>
+							
+							</td>
 						</tr>
 						<tr>
 							<?php 
@@ -251,7 +261,7 @@ if(isset($success))
 						</tr>
 					<?php echo form_close(); ?>
 			<?php
-				}
+				$kk++; }
 				
 				$tabindex = 5; 
 			}
@@ -590,6 +600,88 @@ if(isset($success))
 		}
 		?>
 	</div>
+	<script type="text/javascript" src="<?Php echo site_url(); ?>js/cal.js"></script>
+        <link rel="stylesheet" media="screen, print, handheld" type="text/css" href="<?Php echo site_url(); ?>css/cal.css" />
+	 <table class="calculator" id="calc">
+            <tr>
+                <td colspan="4" class="calc_td_result">
+                    <input type="text" readonly="readonly" name="calc_result" id="calc_result" class="calc_result" onkeydown="javascript:key_detect_calc('calc',event);" />
+                </td>
+            </tr>
+            <tr>
+                <td class="calc_td_btn">
+                        <input type="button" class="calc_btn" value="CE" onclick="javascript:f_calc('calc','ce');" />
+                </td>
+                <td class="calc_td_btn">
+                        <input type="button" class="calc_btn" value="&larr;" onclick="javascript:f_calc('calc','nbs');" />
+                </td>
+                <td class="calc_td_btn">
+                        <input type="button" class="calc_btn" value="%" onclick="javascript:f_calc('calc','%');" />
+                </td>
+                <td class="calc_td_btn">
+                        <input type="button" class="calc_btn" value="+" onclick="javascript:f_calc('calc','+');" />
+                </td>
+            </tr>
+            <tr>
+                <td class="calc_td_btn">
+                        <input type="button" class="calc_btn" value="7" onclick="javascript:add_calc('calc',7);" />
+                </td>
+                <td class="calc_td_btn">
+                        <input type="button" class="calc_btn" value="8" onclick="javascript:add_calc('calc',8);" />
+                </td>
+                <td class="calc_td_btn">
+                        <input type="button" class="calc_btn" value="9" onclick="javascript:add_calc('calc',9);" />
+                </td>
+                <td class="calc_td_btn">
+                        <input type="button" class="calc_btn" value="-" onclick="javascript:f_calc('calc','-');" />
+                </td>
+            </tr>
+                        <tr>
+                <td class="calc_td_btn">
+                        <input type="button" class="calc_btn" value="4" onclick="javascript:add_calc('calc',4);" />
+                </td>
+                <td class="calc_td_btn">
+                        <input type="button" class="calc_btn" value="5" onclick="javascript:add_calc('calc',5);" />
+                </td>
+                <td class="calc_td_btn">
+                        <input type="button" class="calc_btn" value="6" onclick="javascript:add_calc('calc',6);" />
+                </td>
+                <td class="calc_td_btn">
+                        <input type="button" class="calc_btn" value="x" onclick="javascript:f_calc('calc','*');" />
+                </td>
+            </tr>
+            <tr>
+                <td class="calc_td_btn">
+                        <input type="button" class="calc_btn" value="1" onclick="javascript:add_calc('calc',1);" />
+                </td>
+                <td class="calc_td_btn">
+                        <input type="button" class="calc_btn" value="2" onclick="javascript:add_calc('calc',2);" />
+                </td>
+                <td class="calc_td_btn">
+                        <input type="button" class="calc_btn" value="3" onclick="javascript:add_calc('calc',3);" />
+                </td>
+                <td class="calc_td_btn">
+                        <input type="button" class="calc_btn" value="&divide;" onclick="javascript:f_calc('calc','');" />
+                </td>
+            </tr>
+            <tr>
+                <td class="calc_td_btn">
+                        <input type="button" class="calc_btn" value="0" onclick="javascript:add_calc('calc',0);" />
+                </td>
+                <td class="calc_td_btn">
+                        <input type="button" class="calc_btn" value="&plusmn;" onclick="javascript:f_calc('calc','+-');" />
+                </td>
+                <td class="calc_td_btn">
+                        <input type="button" class="calc_btn" value="," onclick="javascript:add_calc('calc','.');" />
+                </td>
+                <td class="calc_td_btn">
+                        <input type="button" class="calc_btn" value="=" onclick="javascript:f_calc('calc','=');" />
+                </td>
+            </tr>
+        </table>
+        <script type="text/javascript">
+                document.getElementById('calc').onload=init_calc('calc');
+        </script>
 		
 </div>
 
@@ -611,8 +703,6 @@ $(document).ready(function()
 
 	$('#item').focus();
 
-	$('#finish_sale_button').focus();
-	
 	$('#item').keypress(function (e) {
 		if(e.which == 13) {
 			$('#add_item_form').submit();
@@ -849,6 +939,9 @@ function check_payment_type()
 	}
 }
 
+
+
+
 jQuery(document).ready(function(){
     // This button will increment the value
     $('.qtyplus').click(function(e){
@@ -858,15 +951,18 @@ jQuery(document).ready(function(){
 		
         fieldName = $(this).attr('field');
         fieldid = $(this).parent().attr('id');
+        fieldclass = $(this).parent().attr('class');
         // Get its current value
         var currentVal = parseInt($('#'+fieldid+' input[name='+fieldName+']').val());
         // If is not undefined
         if (!isNaN(currentVal)) {
             // Increment
             $('#'+fieldid+' input[name='+fieldName+']').val(currentVal + 1);
+			document.getElementById('cart_'+fieldclass).submit();
         } else {
             // Otherwise put a 0 there
             $('#'+fieldid+' input[name='+fieldName+']').val(0);
+			document.getElementById('cart_'+fieldclass).submit();
         }
     });
     // This button will decrement the value till 0
@@ -876,16 +972,18 @@ jQuery(document).ready(function(){
         // Get the field name
         fieldName = $(this).attr('field');
 		fieldid = $(this).parent().attr('id');
-		
+		fieldclass = $(this).parent().attr('class');
         // Get its current value
         var currentVal = parseInt($('#'+fieldid+' input[name='+fieldName+']').val());
         // If it isn't undefined or its greater than 0
         if (!isNaN(currentVal) && currentVal > 0) {
             // Decrement one
             $('#'+fieldid+' input[name='+fieldName+']').val(currentVal - 1);
+			document.getElementById('cart_'+fieldclass).submit();
         } else {
             // Otherwise put a 0 there
             $('#'+fieldid+' input[name='+fieldName+']').val(0); 
+			document.getElementById('cart_'+fieldclass).submit();
         }
     });
 });
@@ -899,6 +997,5 @@ jQuery(document).ready(function(){
 
 
 </style>
-
 
 <?php $this->load->view("partial/footer"); ?>
