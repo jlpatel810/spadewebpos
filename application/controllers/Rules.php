@@ -6,12 +6,13 @@ class Rules extends Persons
 {
 	public function __construct()
 	{
-		parent::__construct('rules');
+		parent::__construct('Rules');
+		//
 	}
 	
 	public function index()
 	{
-		$data['table_headers'] = $this->xss_clean(get_rules_manage_table_headers());
+		$data['table_headers'] = $this->xss_clean(get_rules_manage_table_headers()); 
 		
 
 		$this->load->view('people/manage', $data);
@@ -22,21 +23,23 @@ class Rules extends Persons
 	*/
 	public function search()
 	{
-		die; $search = $this->input->get('search');
+		 $search = $this->input->get('search');
 		$limit  = $this->input->get('limit');
 		$offset = $this->input->get('offset');
 		$sort   = $this->input->get('sort');
 		$order  = $this->input->get('order');
 
-		$customers = $this->Customer->searcha($search, $limit, $offset, $sort, $order);
-		$total_rows = $this->Customer->get_found_rows($search);
+		$rules = $this->Rule->search($search, $limit, $offset, $sort, $order);
+		$total_rows = $this->Rule->get_found_rows($search);
 
 		$data_rows = array();
-		foreach($customers->result() as $person)
+		foreach($rules->result() as $row)
 		{
-			$data_rows[] = get_person_data_row($person, $this);
+			
+			
+			$data_rows[] = get_rule_data_row($row, $this); 
 		}
-
+		
 		$data_rows = $this->xss_clean($data_rows);
 
 		echo json_encode(array('total' => $total_rows, 'rows' => $data_rows));
@@ -64,52 +67,47 @@ class Rules extends Persons
 	*/
 	public function view($customer_id = -1)
 	{
-		$info = $this->Customer->get_info($customer_id);
+		$info = $this->Rule->get_info($customer_id);
 		foreach(get_object_vars($info) as $property => $value)
 		{
 			$info->$property = $this->xss_clean($value);
 		}
-		$data['person_info'] = $info; 
+		$data['rule_data'] = $info;
 
-		$data['total'] = $this->xss_clean($this->Customer->get_totals($customer_id)->total);
-		
+		$data['total'] = $this->xss_clean($this->Rule->get_totals($customer_id)->total);
+
 		$this->load->view("rules/form", $data);
-		
 	}
 	
 	/*
 	Inserts/updates a customer
 	*/
-	public function save($customer_id = -1)
+	public function save($rule_id = -1)
 	{
+		
+		
+		//echo in_array('Customer', $this->_ci_models, TRUE);
+		
+		
 		$person_data = array(
-			'first_name' => $this->input->post('first_name'),
-			'last_name' => $this->input->post('last_name'),
-			'gender' => $this->input->post('gender'),
-			'email' => $this->input->post('email'),
-			'phone_number' => $this->input->post('phone_number'),
-			'address_1' => $this->input->post('address_1'),
-			'address_2' => $this->input->post('address_2'),
-			'city' => $this->input->post('city'),
-			'state' => $this->input->post('state'),
-			'zip' => $this->input->post('zip'),
-			'country' => $this->input->post('country'),
-			'comments' => $this->input->post('comments')
+			'rule_name' => $this->input->post('rule_name'),			
+			'apply' => $this->input->post('apply'),
+			'discount_amount' => $this->input->post('discount_amount'),
+			'rule_discount_qty' => $this->input->post('rule_discount_qty'),
+			'x_discount_qty' => $this->input->post('x_discount_qty'),						
+			'status' => $this->input->post('status')	 					
 		);
-		$customer_data = array(
-			'account_number' => $this->input->post('account_number') == '' ? NULL : $this->input->post('account_number'),
-			'company_name' => $this->input->post('company_name') == '' ? NULL : $this->input->post('company_name'),
-			'discount_percent' => $this->input->post('discount_percent') == '' ? 0.00 : $this->input->post('discount_percent'),
-			'taxable' => $this->input->post('taxable') != NULL
-		);
-
-		if($this->Customer->save_customer($person_data, $customer_data, $customer_id))
+		
+	//echo $rule_id; print_r($person_data); die;
+	
+	
+		if($this->Rule->save_data($person_data,$rule_id))
 		{
 			$person_data = $this->xss_clean($person_data);
-			$customer_data = $this->xss_clean($customer_data);
+			
 			
 			//New customer
-			if($customer_id == -1)
+			if($rule_id == -1)
 			{
 				echo json_encode(array('success' => TRUE, 'message' => $this->lang->line('customers_successful_adding').' '.
 								$person_data['first_name'].' '.$person_data['last_name'], 'id' => $customer_data['person_id']));
@@ -117,7 +115,7 @@ class Rules extends Persons
 			else //Existing customer
 			{
 				echo json_encode(array('success' => TRUE, 'message' => $this->lang->line('customers_successful_updating').' '.
-								$person_data['first_name'].' '.$person_data['last_name'], 'id' => $customer_id));
+								$person_data['first_name'].' '.$person_data['last_name'], 'id' => $rule_id));
 			}
 		}
 		else//failure
@@ -126,8 +124,8 @@ class Rules extends Persons
 
 			echo json_encode(array('success' => FALSE, 'message' => $this->lang->line('customers_error_adding_updating').' '.
 							$person_data['first_name'].' '.$person_data['last_name'], 'id' => -1));
-		}
-	}
+		} 
+	}  
 	
 	public function check_account_number()
 	{

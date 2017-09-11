@@ -172,7 +172,14 @@ function get_people_manage_table_headers()
 	}
 
 	return transform_headers($headers);
-}function get_rules_manage_table_headers(){	$CI =& get_instance();	$headers = array(		array('rules.rule_id' => $CI->lang->line('common_id')),		array('rule_name' => 'Rule name'),				array('status' => 'status'),			);	if($CI->Employee->has_grant('messages', $CI->session->userdata('person_id')))	{		$headers[] = array('messages' => '', 'sortable' => FALSE);	}		return transform_headers($headers);}
+}function get_rules_manage_table_headers(){
+	$CI =& get_instance();	$headers = array(	
+	array('rules.rule_id' => $CI->lang->line('common_id')),	
+	array('rule_name' => 'Rule name'),		
+	array('status' => 'status'),		
+	);	if($CI->Employee->has_grant('messages', $CI->session->userdata('person_id')))	{
+		$headers[] = array('messages' => '', 'sortable' => FALSE);	}	
+		return transform_headers($headers);}
 
 function get_person_data_row($person, $controller)
 {
@@ -213,6 +220,8 @@ function get_customer_manage_table_headers()
 	return transform_headers($headers);
 }
 
+
+
 function get_customer_data_row($person, $stats, $controller)
 {
 	$CI =& get_instance();
@@ -231,6 +240,30 @@ function get_customer_data_row($person, $stats, $controller)
 			array('class'=>'modal-dlg', 'data-btn-submit' => $CI->lang->line('common_submit'), 'title'=>$CI->lang->line($controller_name.'_update'))
 	));
 }
+
+
+function get_rule_data_row($row, $controller)
+{
+	$CI =& get_instance();
+	$controller_name = strtolower(get_class($CI));
+		$status='Active';
+	if($row->status==0)
+	{
+		$status='Inactive';
+	}
+
+	return array (
+		'rules.rule_id' => $row->rule_id,
+		'rule_name' => $row->rule_name,
+		
+		'status' => $status,
+		'messages' => empty($row->phone_number) ? '' : anchor("Messages/view/$row->rule_id", '<span class="glyphicon glyphicon-phone"></span>',
+			array('class'=>'modal-dlg', 'data-btn-submit' => $CI->lang->line('common_submit'), 'title'=>$CI->lang->line('messages_sms_send'))),
+		'edit' => anchor($controller_name."/view/$row->rule_id", '<span class="glyphicon glyphicon-edit"></span>',
+			array('class'=>'', 'data-btn-submit' => $CI->lang->line('common_submit'), 'title'=>$CI->lang->line($controller_name.'_update'))
+	));
+}
+
 
 function get_suppliers_manage_table_headers()
 {
