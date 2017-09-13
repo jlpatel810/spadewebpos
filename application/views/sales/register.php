@@ -412,7 +412,7 @@ if(isset($success))
 					<th style="width: 45%; text-align: right;"><?php echo to_currency($payments_total); ?></th>
 				</tr>
 				<tr>
-					<th style="width: 55%; color:red;"><?php echo $this->lang->line('sales_amount_due');?></th>
+					<th style="width: 55%; color:red;text-transform:uppercase;"><?php echo $this->lang->line('sales_amount_due');?></th>
 					<th style="width: 45%; text-align: right;  color:red;"><span id="sale_amount_due"><?php echo to_currency($amount_due); ?></span></th>
 				</tr> 
 			</table>
@@ -599,7 +599,7 @@ if(isset($success))
 		<?php
 		}
 		?>
-	</div>
+	</div><!--
 	<script type="text/javascript" src="<?Php echo site_url(); ?>js/cal.js"></script>
         <link rel="stylesheet" media="screen, print, handheld" type="text/css" href="<?Php echo site_url(); ?>css/cal.css" />
 	 <table class="calculator" id="calc">
@@ -682,7 +682,7 @@ if(isset($success))
         <script type="text/javascript">
                 document.getElementById('calc').onload=init_calc('calc');
         </script>
-		
+	-->	
 </div>
 
 <script type="text/javascript">

@@ -251,7 +251,7 @@ class Items extends Secure_Controller
 			$quantity = ($item_id == -1) ? 0 : $quantity;
 			$location_array[$location['location_id']] = array('location_name' => $location['location_name'], 'quantity' => $quantity);
 			$data['stock_locations'] = $location_array;
-		}
+		}					$data['deals'] =$this->Rule->loaddata();		$selected_deals=$this->Rule->loadselecteddata($item_id);						foreach($selected_deals as $row)				{					$arry[]=$row->rule_id;				} 		$data['selected_deals'] =$arry;
 
 		$this->load->view('items/form', $data);
 	}
@@ -363,7 +363,7 @@ class Items extends Secure_Controller
 	{
 		$upload_success = $this->_handle_image_upload();
 		$upload_data = $this->upload->data();
-
+	$deals=$this->input->post('deals');
 		//Save item data
 		$item_data = array(
 			'name' => $this->input->post('name'),
@@ -414,7 +414,7 @@ class Items extends Secure_Controller
 		$employee_id = $this->Employee->get_logged_in_employee_info()->person_id;
 		$cur_item_info = $this->Item->get_info($item_id);
 		
-		if($this->Item->save($item_data, $item_id))
+		if($this->Item->save($item_data, $item_id,$deals))
 		{
 			$success = TRUE;
 			$new_item = FALSE;

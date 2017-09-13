@@ -192,9 +192,9 @@ class Rule extends CI_Model
 	*/
 	public function delete_list($customer_ids)
 	{
-		$this->db->where_in('person_id', $customer_ids);
+		$this->db->where_in('rule_id', $customer_ids);
 
-		return $this->db->update('rules', array('deleted' => 1));
+		return $this->db->update('rules', array('deleted' => 1));  
  	}
  	
  	/*
@@ -293,6 +293,31 @@ class Rule extends CI_Model
 		}
 
 		return $this->db->get();	
+	}
+	
+	public function loaddata()
+	{
+		$this->db->select('*');
+		$this->db->from('rules');		
+		
+			//$this->db->like('rule_name', $search);
+			
+		
+		$this->db->where('deleted', 0);
+		$this->db->where('status', 1);
+		$this->db->order_by('rule_name', 'asc');
+		
+
+		return $this->db->get()->result();	
+	}
+	
+	public function loadselecteddata($item_id=0)
+	{
+		$this->db->select('*');
+		$this->db->from('items_rule');	
+		$this->db->where('item_id', $item_id);			
+		return $this->db->get()->result();	
+		
 	}
 }
 ?>

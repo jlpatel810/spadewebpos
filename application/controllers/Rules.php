@@ -67,11 +67,15 @@ class Rules extends Persons
 	*/
 	public function view($customer_id = -1)
 	{
-		$info = $this->Rule->get_info($customer_id);
+		$info='';
+		if($customer_id !=-1){
+				$info = $this->Rule->get_info($customer_id);
+	
 		foreach(get_object_vars($info) as $property => $value)
 		{
 			$info->$property = $this->xss_clean($value);
 		}
+			}
 		$data['rule_data'] = $info;
 
 		$data['total'] = $this->xss_clean($this->Rule->get_totals($customer_id)->total);
@@ -141,7 +145,7 @@ class Rules extends Persons
 	{
 		$customers_to_delete = $this->xss_clean($this->input->post('ids'));
 
-		if($this->Customer->delete_list($customers_to_delete))
+		if($this->Rule->delete_list($customers_to_delete)) 
 		{
 			echo json_encode(array('success' => TRUE, 'message' => $this->lang->line('customers_successful_deleted').' '.
 							count($customers_to_delete).' '.$this->lang->line('customers_one_or_multiple')));

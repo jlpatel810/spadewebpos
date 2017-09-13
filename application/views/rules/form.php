@@ -99,7 +99,7 @@
 		<label for="rule_name" class="required control-label col-xs-3" aria-required="true"></label>
 		<div class='col-xs-8'>
 		<button class="btn btn-primary" id="submit">Submit</button>
-		<a class="btn btn-primary" href=''>back</a>
+		<a class="btn btn-primary" href='<?php echo site_url($controller_name."/"); ?>'>back</a>
 		</div>
 		</div>
 		

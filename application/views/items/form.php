@@ -121,7 +121,7 @@
 					<?php endif; ?>
 				</div>
 			</div>
-		</div>
+		</div>						<div class="form-group form-group-sm">			<label for="deals" class="control-label col-xs-3" aria-required="true">Deals</label>									<div class='col-xs-8'> 			<?php 			?>								<select name='deals[]' multiple  CLASS='form-control input-sm'>					<?php 																				foreach($deals as $row){ 						$sel='';					if(in_array($row->rule_id,$selected_deals))					{						$sel=' Selected="Selected" ';					}					?>								<option value='<?php echo $row->rule_id; ?>' <?php echo $sel; ?>><?php echo $row->rule_name; ?></option>					<?php } ?>									</select> 			</div>								</div> 
 
 		<div class="form-group form-group-sm">
 			<?php echo form_label($this->lang->line('items_unit_price'), 'unit_price', array('class'=>'required control-label col-xs-3')); ?>
@@ -342,8 +342,6 @@
 	//validation and submit handling
 	$(document).ready(function()
 	{
-		$('#item_number').focus();
-		
 		$("#new").click(function() {
 			stay_open = true;
 			$("#item_form").submit();

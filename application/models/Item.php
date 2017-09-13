@@ -330,24 +330,7 @@ class Item extends CI_Model
 	/*
 	Inserts or updates a item
 	*/
-	public function save(&$item_data, $item_id = FALSE)
-	{
-		if(!$item_id || !$this->exists($item_id, TRUE))
-		{
-			if($this->db->insert('items', $item_data))
-			{
-				$item_data['item_id'] = $this->db->insert_id();
-
-				return TRUE;
-			}
-
-			return FALSE;
-		}
-
-		$this->db->where('item_id', $item_id);
-
-		return $this->db->update('items', $item_data);
-	}
+	public function save(&$item_data, $item_id = FALSE,$deals)	{		if(!$item_id || !$this->exists($item_id, TRUE))		{			if($this->db->insert('items', $item_data))			{				$item_data['item_id'] = $this->db->insert_id();								if($deals)				{					foreach($deals as $row)					{						$ruledata=array("item_id"=>$item_data['item_id'],'rule_id'=>$row);						$this->db->insert('items_rule',$ruledata);					}				}				return TRUE;			}			return FALSE;		}						 $this->delete_items($item_id);		 		if($deals)				{					foreach($deals as $row)					{						$ruledata=array("item_id"=>$item_id,'rule_id'=>$row);						$this->db->insert('items_rule',$ruledata);					}				}				 		$this->db->where('item_id', $item_id);		return $this->db->update('items', $item_data);	}		public function delete_items($item_id)	{			$this->db->where('item_id', $item_id);			$this->db->delete('items_rule'); 				} 
 
 	/*
 	Updates multiple items at once
