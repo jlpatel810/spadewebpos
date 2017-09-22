@@ -72,9 +72,9 @@ class Rule extends CI_Model
 	public function get_all($rows = 0, $limit_from = 0)
 	{
 		$this->db->from('rules');
-		$this->db->join('people', 'rules.person_id = people.person_id');			
+		//$this->db->join('people', 'rules.person_id = people.person_id');			
 		$this->db->where('deleted', 0);
-		$this->db->order_by('last_name', 'asc');
+		//$this->db->order_by('last_name', 'asc');
 
 		if($rows > 0)
 		{
@@ -139,9 +139,9 @@ class Rule extends CI_Model
 	public function get_multiple_info($customer_ids)
 	{
 		$this->db->from('rules');
-		$this->db->join('people', 'people.person_id = rules.person_id');		
-		$this->db->where_in('rules.person_id', $customer_ids);
-		$this->db->order_by('last_name', 'asc');
+		//$this->db->join('people', 'people.person_id = rules.person_id');		
+		$this->db->where_in('rules.rule_id', $customer_ids);
+		//$this->db->order_by('last_name', 'asc');
 
 		return $this->db->get();
 	}
@@ -182,7 +182,7 @@ class Rule extends CI_Model
 	*/
 	public function delete($customer_id)
 	{
-		$this->db->where('person_id', $customer_id);
+		$this->db->where('rule_id', $customer_id);
 
 		return $this->db->update('rules', array('deleted' => 1));
 	}
@@ -194,7 +194,7 @@ class Rule extends CI_Model
 	{
 		$this->db->where_in('rule_id', $customer_ids);
 
-		return $this->db->update('rules', array('deleted' => 1));  
+		return $this->db->delete('rules');   
  	}
  	
  	/*

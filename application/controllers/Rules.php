@@ -143,16 +143,17 @@ class Rules extends Persons
 	*/
 	public function delete()
 	{
+		
 		$customers_to_delete = $this->xss_clean($this->input->post('ids'));
 
 		if($this->Rule->delete_list($customers_to_delete)) 
 		{
-			echo json_encode(array('success' => TRUE, 'message' => $this->lang->line('customers_successful_deleted').' '.
-							count($customers_to_delete).' '.$this->lang->line('customers_one_or_multiple')));
+			echo json_encode(array('success' => TRUE, 'message' => 'Deals has been deleted'.' '.
+							count($customers_to_delete)));
 		}
 		else
 		{
-			echo json_encode(array('success' => FALSE, 'message' => $this->lang->line('customers_cannot_be_deleted')));
+			echo json_encode(array('success' => FALSE, 'message' => 'Deals can not deleted.'));
 		}
 	}
 
