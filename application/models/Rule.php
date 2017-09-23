@@ -295,7 +295,7 @@ class Rule extends CI_Model
 		return $this->db->get();	
 	}
 	
-	public function loaddata()
+	public function loaddata($search='')
 	{
 		$this->db->select('*');
 		$this->db->from('rules');		
@@ -306,8 +306,9 @@ class Rule extends CI_Model
 		$this->db->where('deleted', 0);
 		$this->db->where('status', 1);
 		$this->db->order_by('rule_name', 'asc');
-		
-
+		if($search){
+		$this->db->like('rule_name', $search);
+		}
 		return $this->db->get()->result();	
 	}
 	

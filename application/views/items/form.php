@@ -121,7 +121,30 @@
 					<?php endif; ?>
 				</div>
 			</div>
-		</div>						<div class="form-group form-group-sm">			<label for="deals" class="control-label col-xs-3" aria-required="true">Deals</label>									<div class='col-xs-8'> 			<?php 			?>								<select name='deals[]' multiple  CLASS='form-control input-sm'>					<?php 																				foreach($deals as $row){ 						$sel='';					if(in_array($row->rule_id,$selected_deals))					{						$sel=' Selected="Selected" ';					}					?>								<option value='<?php echo $row->rule_id; ?>' <?php echo $sel; ?>><?php echo $row->rule_name; ?></option>					<?php } ?>									</select> 			</div>								</div> 
+		</div>						<div class="form-group form-group-sm">	
+		<label for="deals" class="control-label col-xs-3" aria-required="true">Deals <?php //echo $item_info->item_id; ?></label>	
+		<div class='col-xs-8'> 		
+		<?php 			?>	
+			<input type='textbox' name='searchdeals' id='searchdeals' placeholder='Search Deals' class="form-control input-sm"/>
+		<div id='dealsdata'>
+			
+					<ul><?php 																
+					foreach($deals as $row){ 			
+					$sel='';
+						if($selected_deals){
+					if(in_array($row->rule_id,$selected_deals))	
+					{					
+					$sel=' checked="checked" ';	
+						}				}	?>	
+
+					<li><input type='checkbox' name='deals[]' value='<?php echo $row->rule_id; ?>' <?php echo $sel; ?>  />  <?php echo $row->rule_name; ?></li>	
+					
+					<?php } ?></ul>							
+			
+		</div>						
+			</div>			
+			</div> 
+			
 
 		<div class="form-group form-group-sm">
 			<?php echo form_label($this->lang->line('items_unit_price'), 'unit_price', array('class'=>'required control-label col-xs-3')); ?>
@@ -342,6 +365,41 @@
 	//validation and submit handling
 	$(document).ready(function()
 	{
+		
+		
+		
+		$("#searchdeals").keyup(function(event) 
+		{
+
+		
+			var val=$('#searchdeals').val();
+			//alert(val);
+			//$('#dealsdata').html(val);
+			
+			
+			$.ajax({
+						type: "POST",
+						url: "<?php echo site_url("items/finddeals"); ?>",
+						dataType: "html",
+						data: $.extend(csrf_form_base(), {searchdeals: val},{item_id: <?php if($item_info->item_id) { echo $item_info->item_id; } else { echo '0'; } ?>}),
+						success: function(data) 
+						{
+							$('#dealsdata').html(data);
+						}
+					});
+			
+
+		}
+		);
+
+		
+		
+		
+		
+		
+		
+		
+		
 		$("#new").click(function() {
 			stay_open = true;
 			$("#item_form").submit();

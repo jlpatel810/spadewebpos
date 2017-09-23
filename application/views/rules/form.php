@@ -9,7 +9,7 @@
  
 		<div class="form-group form-group-sm"> 
 		
-			<label for="rule_name" class="required control-label col-xs-3" aria-required="true">Rule Name</label>
+			<label for="rule_name" class="required control-label col-xs-3" aria-required="true">Rule Name *</label>
 			
 			<div class='col-xs-8'>
 				<?php echo form_input(array(
@@ -22,12 +22,12 @@
 		<div class="form-group form-group-sm"> 
 			
 				<?php 
-				$applydata['by_percent']='Percent of product price discount';
+				//$applydata['by_percent']='Percent of product price discount';
 				$applydata['by_fixed']='Fixed amount discount';
-				$applydata['buy_x_get_y']='Buy X get Y discount (discount amount is Y)';
+				//$applydata['buy_x_get_y']='Buy X get Y discount (discount amount is Y)';
 				
 				?>
-				<label for="Apply" class="required control-label col-xs-3" aria-required="true">Apply</label>
+				<label for="Apply" class=" control-label col-xs-3" aria-required="true">Apply</label>
 				
 				<div class='col-xs-8'>
 					<?php echo form_dropdown('apply', $applydata, $rule_data->apply, array('class'=>'form-control')); ?>
@@ -37,7 +37,7 @@
 		
 		<div class="form-group form-group-sm"> 
 		
-			<label for="discount_amount" class="control-label col-xs-3" aria-required="true">Discount Amount</label>
+			<label for="discount_amount" class="1required control-label col-xs-3" aria-required="true">Discount Amount ($) *</label>
 			
 			<div class='col-xs-8'>
 				<?php echo form_input(array(
@@ -50,7 +50,7 @@
 		
 		<div class="form-group form-group-sm"> 
 		
-			<label for="discount_amount" class="control-label col-xs-3" aria-required="true">Maximum Qty Discount</label>
+			<label for="discount_amount" class="required control-label col-xs-3" aria-required="true">Maximum Qty Discount *</label>
 			
 			<div class='col-xs-8'>
 				<?php echo form_input(array(
@@ -131,14 +131,19 @@ $(document).ready(function()
 		},
 		rules:
 		{
-			rule_name: "required"
+			rule_name: "required",
+			discount_amount: "required",
+			rule_discount_qty: "required"
+			
 			
     		
     		
    		},
 		messages: 
 		{
-     		rule_name: "Please enter rule name" 
+     		rule_name: "Please enter rule name",
+     		discount_amount: "Please enter Discount amount",
+     		rule_discount_qty: "Please enter Maximum Qty Discount"
      		
 		}
 	}, form_support.error));
