@@ -72,7 +72,7 @@ class Items extends Secure_Controller
 
 		echo json_encode(array('total' => $total_rows, 'rows' => $data_rows));
 	}
-	
+		public function finddeals()	{						$search=$this->input->post('searchdeals');		$item_id=$this->input->post('item_id');						$data['deals'] =$this->Rule->loaddata($search);				$selected_deals=$this->Rule->loadselecteddata($item_id);			foreach($selected_deals as $row)			{			$arry[]=$row->rule_id;				} 				$data['selected_deals'] =$arry;		$this->load->view('items/dealsform', $data); 	}
 	public function pic_thumb($pic_filename)
 	{
 		$this->load->helper('file');
@@ -252,38 +252,14 @@ class Items extends Secure_Controller
 			$location_array[$location['location_id']] = array('location_name' => $location['location_name'], 'quantity' => $quantity);
 			$data['stock_locations'] = $location_array;
 		}					$data['deals'] =$this->Rule->loaddata();		
-		$selected_deals=$this->Rule->loadselecteddata($item_id);	
-		foreach($selected_deals as $row)	
-		{					$arry[]=$row->rule_id;				} 	
-	$data['selected_deals'] =$arry;
+		$selected_deals=$this->Rule->loadselecteddata($item_id);						
+		foreach($selected_deals as $row)				
+		{					
+		    $arry[]=$row->rule_id;				
+		} 		
+		$data['selected_deals'] =$arry;
 
 		$this->load->view('items/form', $data);
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	public function finddeals()
-	{
-		
-		
-		$search=$this->input->post('searchdeals');
-		$item_id=$this->input->post('item_id');
-		
-		
-		$data['deals'] =$this->Rule->loaddata($search);		
-		$selected_deals=$this->Rule->loadselecteddata($item_id);	
-		foreach($selected_deals as $row)	
-		{
-			$arry[]=$row->rule_id;		
-		} 	
-			$data['selected_deals'] =$arry;
-
-		$this->load->view('items/dealsform', $data); 
 	}
 
 	public function inventory($item_id = -1)

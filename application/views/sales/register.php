@@ -59,15 +59,7 @@ if(isset($success))
 						<?php echo anchor($controller_name."/addopenitem", '<span class="glyphicon glyphicon-list-alt">&nbsp</span>' . $this->lang->line('sales_openitem'), 
 									array('class'=>'btn btn-primary btn-sm', 'id'=>'sales_openitem_button', 'title'=>$this->lang->line('sales_openitem'))); ?>
 					</li>
-				<li class="pull-left">
-				<button class='btn btn-default btn-sm modal-dlg' id='show_suspended_sales_button' data-href='<?php echo site_url($controller_name."/suspended"); ?>'
-							title='<?php echo $this->lang->line('sales_tax'); ?>'>
-						<span class="glyphicon glyphicon-align-justify">&nbsp</span><?php echo $this->lang->line('sales_tax'); ?>
-					</button>						
-						
-					</li>	
-			
-
+				
 				<li class="pull-right">
 					<button class='btn btn-default btn-sm modal-dlg' id='show_suspended_sales_button' data-href='<?php echo site_url($controller_name."/suspended"); ?>'
 							title='<?php echo $this->lang->line('sales_suspended_sales'); ?>'>
@@ -185,21 +177,24 @@ if(isset($success))
 								}
 								else
 								{			
-									echo "<div id='qty_$kk' class='$line'>"; 
+									echo "<div id='qty_$kk' class='$line'><br/>"; 
 									
-									echo "<input type='button' value='+' class='qtyplus' field='quantity' />";  
+									//echo "<input type='button' value='+' class='qtyplus' field='quantity' />";  
 
 							
 									echo form_input(array('name'=>'quantity', 'class'=>'form-control input-sm', 'value'=>to_quantity_decimals($item['quantity']), 'tabindex'=>++$tabindex));									
-									
-									echo " <input type='button' value='-' class='qtyminus' field='quantity' />";
+									?><select name='pk' class='pk' onchange='changeqty(this.value,"qty_<?php echo $kk; ?>","<?php echo $line; ?>")' > <?php 																		$sel='';																		if($item['quantity']==1){	$sel=' Selected="Selected" ';	}									echo "<option value='1' " .$sel. " >1 PK</option>";																		$sel='';									if($item['quantity']==6){	$sel=' Selected="Selected" ';}									echo "<option value='6' " .$sel. " >6 PK</option>";																																				$sel='';									if($item['quantity']==12){	$sel=' Selected="Selected" ';}									echo "<option value='12' " .$sel. " >12 PK</option>";																											$sel='';									if($item['quantity']==18){	$sel=' Selected="Selected" ';}									echo "<option value='18' " .$sel. " >18 PK</option>";																											$sel='';									if($item['quantity']==24){	$sel=' Selected="Selected" ';}									echo "<option value='24' " .$sel. " >24PK</option>";																											$sel='';									if($item['quantity']==30){	$sel=' Selected="Selected" ';}									echo "<option value='30' " .$sel. " >30 PK</option>";																		$sel='';									if($item['quantity']==36){	$sel=' Selected="Selected" ';}									echo "<option value='36' " .$sel. " >36 PK</option>";																																					echo "</select>";
+									//echo " <input type='button' value='-' class='qtyminus' field='quantity' />";
 									echo "</div>"; 
 								}
 								?>
 							</td>
 
 							<td><?php echo form_input(array('name'=>'discount', 'class'=>'form-control input-sm', 'value'=>to_decimals($item['discount'], 0), 'tabindex'=>++$tabindex));?></td>
-							<td><?php echo to_currency($item['price']*$item['quantity']-$item['price']*$item['quantity']*$item['discount']/100); ?></td>
+							<td><?php 
+							echo to_currency($item['total']); 
+							?>
+							</td>
 							<td>
 							<div id='ref_<?php echo $kk; ?>'> 
 							<a  href="javascript:document.getElementById('<?php echo 'cart_'.$line ?>').submit();" title=<?php echo $this->lang->line('sales_update')?> ><span class="glyphicon glyphicon-refresh"></span></a>
@@ -702,7 +697,8 @@ $(document).ready(function()
 	});
 
 	$('#item').focus();
-
+	$('#finish_sale_button').focus();
+	
 	$('#item').keypress(function (e) {
 		if(e.which == 13) {
 			$('#add_item_form').submit();
@@ -938,55 +934,12 @@ function check_payment_type()
 		$(".non-giftcard-input").attr('disabled', false);
 	}
 }
+ 
 
+function changeqty(val,classname,fieldclass){	   fieldName='quantity';	 	   $('#'+classname+' input[name='+fieldName+']').val(val);  	   document.getElementById('cart_'+fieldclass).submit();   }
 
-
-
-jQuery(document).ready(function(){
-    // This button will increment the value
-    $('.qtyplus').click(function(e){
-        // Stop acting like a button
-        e.preventDefault();
-        // Get the field name
-		
-        fieldName = $(this).attr('field');
-        fieldid = $(this).parent().attr('id');
-        fieldclass = $(this).parent().attr('class');
-        // Get its current value
-        var currentVal = parseInt($('#'+fieldid+' input[name='+fieldName+']').val());
-        // If is not undefined
-        if (!isNaN(currentVal)) {
-            // Increment
-            $('#'+fieldid+' input[name='+fieldName+']').val(currentVal + 1);
-			document.getElementById('cart_'+fieldclass).submit();
-        } else {
-            // Otherwise put a 0 there
-            $('#'+fieldid+' input[name='+fieldName+']').val(0);
-			document.getElementById('cart_'+fieldclass).submit();
-        }
-    });
-    // This button will decrement the value till 0
-    $(".qtyminus").click(function(e) {
-        // Stop acting like a button
-        e.preventDefault();
-        // Get the field name
-        fieldName = $(this).attr('field');
-		fieldid = $(this).parent().attr('id');
-		fieldclass = $(this).parent().attr('class');
-        // Get its current value
-        var currentVal = parseInt($('#'+fieldid+' input[name='+fieldName+']').val());
-        // If it isn't undefined or its greater than 0
-        if (!isNaN(currentVal) && currentVal > 0) {
-            // Decrement one
-            $('#'+fieldid+' input[name='+fieldName+']').val(currentVal - 1);
-			document.getElementById('cart_'+fieldclass).submit();
-        } else {
-            // Otherwise put a 0 there
-            $('#'+fieldid+' input[name='+fieldName+']').val(0); 
-			document.getElementById('cart_'+fieldclass).submit();
-        }
-    });
-});
+			
+   
 
 
 </script>

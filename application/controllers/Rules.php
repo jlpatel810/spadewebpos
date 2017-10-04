@@ -97,7 +97,7 @@ class Rules extends Persons
 			'rule_name' => $this->input->post('rule_name'),			
 			'apply' => $this->input->post('apply'),
 			'discount_amount' => $this->input->post('discount_amount'),
-			'rule_discount_qty' => $this->input->post('rule_discount_qty'),
+			'rule_discount_qty' => 0,
 			'x_discount_qty' => $this->input->post('x_discount_qty'),						
 			'status' => $this->input->post('status')	 					
 		);
@@ -143,17 +143,16 @@ class Rules extends Persons
 	*/
 	public function delete()
 	{
-		
 		$customers_to_delete = $this->xss_clean($this->input->post('ids'));
 
 		if($this->Rule->delete_list($customers_to_delete)) 
 		{
-			echo json_encode(array('success' => TRUE, 'message' => 'Deals has been deleted'.' '.
-							count($customers_to_delete)));
+			echo json_encode(array('success' => TRUE, 'message' => $this->lang->line('customers_successful_deleted').' '.
+							count($customers_to_delete).' '.$this->lang->line('customers_one_or_multiple')));
 		}
 		else
 		{
-			echo json_encode(array('success' => FALSE, 'message' => 'Deals can not deleted.'));
+			echo json_encode(array('success' => FALSE, 'message' => $this->lang->line('customers_cannot_be_deleted')));
 		}
 	}
 

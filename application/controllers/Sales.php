@@ -48,7 +48,7 @@ class Sales extends Secure_Controller
 			$this->load->view('sales/manage', $data);
 		}
 	}
-
+	
 	public function get_row($row_id)
 	{
 		$sale_info = $this->Sale->get_info($row_id)->row();
@@ -299,6 +299,17 @@ class Sales extends Secure_Controller
 		$this->_reload();
 	}
 
+	
+	public function get_deals($item_id)
+	{
+	   return $items_deals=$this->Rule->loadselecteddata($item_id);
+	}
+	
+	public function get_totalDiscount($rule_id)
+	{
+	    return $rule_details=$this->Rule->get_info($rule_id);
+	}
+			
 	public function add()
 	{
 		$data = array();
@@ -322,12 +333,14 @@ class Sales extends Secure_Controller
 		{
 			$discount = $this->config->item('default_sales_discount');
 		}
+		
 
 		$mode = $this->sale_lib->get_mode();
 		$quantity = ($mode == 'return') ? -1 : 1;
 		$item_location = $this->sale_lib->get_sale_location();
 		$item_id_or_number_or_item_kit_or_receipt = $this->input->post('item');
 
+	
 		if($mode == 'return' && $this->Sale->is_valid_receipt($item_id_or_number_or_item_kit_or_receipt))
 		{
 			$this->sale_lib->return_entire_sale($item_id_or_number_or_item_kit_or_receipt);
@@ -353,7 +366,7 @@ class Sales extends Secure_Controller
 
 			if(!empty($kit_item_id))
 			{
-				if(!$this->sale_lib->add_item($kit_item_id, $quantity, $item_location, $discount, $price, NULL, NULL, NULL, $print_option, $stock_type))
+			    if(!$this->sale_lib->add_item($kit_item_id, $quantity, $item_location, $discount,$deals, $price, NULL, NULL, NULL, $print_option, $stock_type,$deals ))
 				{
 					$data['error'] = $this->lang->line('sales_unable_to_add_item');
 				}
@@ -365,7 +378,7 @@ class Sales extends Secure_Controller
 
 			// Add item kit items to order
 			$stock_warning = NULL;
-			if(!$this->sale_lib->add_item_kit($item_id_or_number_or_item_kit_or_receipt, $item_location, $discount, $price_option, $kit_print_option, $stock_warning))
+			if(!$this->sale_lib->add_item_kit($item_id_or_number_or_item_kit_or_receipt, $item_location, $discount,$deals, $price_option, $kit_print_option, $stock_warning))
 			{
 				$data['error'] = $this->lang->line('sales_unable_to_add_item');
 			}
@@ -415,7 +428,7 @@ class Sales extends Secure_Controller
 	    $mode = $this->sale_lib->get_mode();
 	    $quantity = ($mode == 'return') ? -1 : 1;
 	    $item_location = $this->sale_lib->get_sale_location();
-	    $item_id_or_number_or_item_kit_or_receipt = "3009";
+	    $item_id_or_number_or_item_kit_or_receipt = "1530";
 	    
 	    if(!$this->sale_lib->add_item($item_id_or_number_or_item_kit_or_receipt, $quantity, $item_location, $discount))
 	    {
@@ -429,9 +442,31 @@ class Sales extends Secure_Controller
 	    $this->_reload($data);
 	}
 	
-	public function applysalesTax()
+	public function applysalesTax($items)
 	{
-	
+	    foreach($items as $item)
+	    {
+	        $current_quantity = $item['quantity'];
+	        $deals = $this->get_deals($item['item_id']);
+	        
+	        foreach ($deals as $deal) {
+	            $rule_id = $deal->rule_id;
+	            $ruledata = $this->get_totalDiscount($rule_id);
+	            $rule_quantity = $ruledata->x_discount_qty;
+	            $rule_discount = $ruledata->discount_amount;
+	            if($current_quantity < $rule_quantity)
+	            {
+	                continue;
+	            }
+	            else {
+	                $current_quantity = $current_quantity - $rule_quantity;
+	                $discount = $discount + $rule_discount;
+	            }
+	            $item['discount'] = $ruledata->discount-amount;
+	        }
+	        
+	    }
+	    return $items;
 	}
 	
 	
@@ -978,7 +1013,61 @@ class Sales extends Secure_Controller
 
 	private function _reload($data = array())
 	{
-		$data['cart'] = $this->sale_lib->get_cart();
+	    $items =$this->sale_lib->get_cart();
+	    foreach($items as &$item)
+	    {
+	        $withoutdiscountItems = 0;
+	        $current_quantity = $item['quantity'];
+	        $deals = $this->get_deals($item['item_id']);
+	        $withDiscount = 0;
+	        $totalDiscountedAmount = 0;
+	        do{
+	            foreach ($deals as $deal) {
+	                $rule_id = $deal->rule_id;
+	                $ruledata = $this->get_totalDiscount($rule_id);
+	                $rule_quantity = $ruledata->x_discount_qty;
+	                $rule_discount = $ruledata->discount_amount;
+	                if($current_quantity < $rule_quantity)
+	                {
+	                    continue;
+	                }
+	                $current_quantity = $current_quantity - $rule_quantity;
+	                $withDiscount =  $withDiscount + bcsub(bcmul($rule_quantity, $item['price']),$rule_discount);
+	                $totalDiscountedAmount = $totalDiscountedAmount + $rule_discount;
+	            }
+	            
+	            if ($current_quantity != 0) $withoutdiscountItems++;
+	            $current_quantity--;
+	        }while ($current_quantity != -1);
+	        
+/*	        foreach ($deals as $deal) {
+	            $rule_id = $deal->rule_id;
+	            $ruledata = $this->get_totalDiscount($rule_id);
+	            $rule_quantity = $ruledata->x_discount_qty;
+	            $rule_discount = $ruledata->discount_amount;
+	            if($current_quantity < $rule_quantity)
+	            {
+	                continue;
+	            }
+	            else {
+	                $current_quantity = $current_quantity - $rule_quantity;
+	                    $discount = $rule_discount;
+	                
+	            }
+	            $item['discount'] = strval($discount);
+	          }
+	          $discountedItems = $item['quantity'] - $current_quantity;
+	          $withDiscount = $this->sale_lib->get_item_total($discountedItems,$item['price'],$discount,TRUE);
+	          $withoutDiscount = $this->sale_lib->get_item_total($current_quantity,$item['price'],0,FALSE);
+	          $item['total'] = $withDiscount + $withoutDiscount;
+	          $item['discounted_total'] = $item['total'];*/
+	        
+	        $withoutDiscount = $this->sale_lib->get_item_total($withoutdiscountItems,$item['price'],0,FALSE);
+	        $item['total'] = $withDiscount + $withoutDiscount;
+	        $item['discounted_total'] = $totalDiscountedAmount;
+	    }
+	    $this->sale_lib->apply_deals_Discount($items);
+	    $data['cart'] = $this->sale_lib->get_cart();
 		$customer_info = $this->_load_customer_data($this->sale_lib->get_customer(), $data, TRUE);
 
 		if($this->config->item('invoice_enable') == '0')
@@ -1002,6 +1091,7 @@ class Sales extends Secure_Controller
 		$data['stock_location'] = $this->sale_lib->get_sale_location();
 		$data['tax_exclusive_subtotal'] = $this->sale_lib->get_subtotal(TRUE, TRUE);
 		$data['taxes'] = $this->sale_lib->get_taxes();
+		
 		$data['discount'] = $this->sale_lib->get_discount();
 		$data['payments'] = $this->sale_lib->get_payments();
 
