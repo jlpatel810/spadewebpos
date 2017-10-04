@@ -250,10 +250,10 @@ function get_rule_data_row($row, $controller)
 	if($row->status==0)
 	{
 		$status='Inactive';
-	}
+	} 
 
 	return array (
-		'rules.rule_id' => $row->rule_id,
+		'people.person_id' => $row->rule_id,		'rules.rule_id' => $row->rule_id,
 		'rule_name' => $row->rule_name,
 		
 		'status' => $status,
