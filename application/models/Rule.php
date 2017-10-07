@@ -305,6 +305,7 @@ class Rule extends CI_Model
 		
 		$this->db->where('deleted', 0);
 		$this->db->where('status', 1);
+		$this->db->where('apply', 'by_fixed');
 		$this->db->order_by('rule_name', 'asc');
 		if($search){ 
 		$this->db->like('rule_name', $search);

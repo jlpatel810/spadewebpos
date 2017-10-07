@@ -99,6 +99,7 @@ class Rules extends Persons
 			'discount_amount' => $this->input->post('discount_amount'),
 			'rule_discount_qty' => 0,
 			'x_discount_qty' => $this->input->post('x_discount_qty'),						
+			'items_on_deals' => $this->input->post('items_on_deals'),						
 			'status' => $this->input->post('status')	 					
 		);
 		
